@@ -1,4 +1,5 @@
-import NextResponse from 'next/server';
+import {NextResponse} from 'next/server';
+import { buffer } from 'node:stream/consumers';
 
 import fs from 'fs';
 import path from 'path';
@@ -75,7 +76,8 @@ async function generateImages(prompts) {
 // };
 
 export async function POST(req) {
-  const { prompts } = await req.json();
+  const body =await buffer(req.body);
+  const { prompts } = JSON.parse(body);
 
   if (!prompts || !Array.isArray(prompts)) {
     return NextResponse.json({ error: 'Prompts are required and must be an array.' }, { status: 400 });
