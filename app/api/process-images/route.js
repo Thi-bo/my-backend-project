@@ -100,13 +100,13 @@ async function processAllImages(imageDirectoryName) {
   return videoDirectory;
 }
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: '10mb',
+//     },
+//   },
+// };
 
 export async function POST(req) {
     const body = await buffer(req.body);

@@ -66,13 +66,13 @@ async function generateImages(prompts) {
   return { folderName: folderName.replace(process.cwd() + '/public', ''), imagePaths };
 }
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-  },
-};
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: '10mb',
+//     },
+//   },
+// };
 
 export async function POST(req) {
   const { prompts } = await req.json();
