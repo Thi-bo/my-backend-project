@@ -1,3 +1,5 @@
+import NextResponse from 'next/server';
+
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
@@ -64,22 +66,29 @@ async function generateImages(prompts) {
   return { folderName: folderName.replace(process.cwd() + '/public', ''), imagePaths };
 }
 
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    const { prompts } = req.body;
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+  },
+};
 
-    if (!prompts || !Array.isArray(prompts)) {
-      return res.status(400).json({ error: 'Prompts are required and must be an array.' });
-    }
+export async function POST(req) {
+  const { prompts } = await req.json();
 
-    try {
-      const { folderName, imagePaths } = await generateImages(prompts);
-      res.status(200).json({ folderName, images: imagePaths });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  if (!prompts || !Array.isArray(prompts)) {
+    return NextResponse.json({ error: 'Prompts are required and must be an array.' }, { status: 400 });
   }
+
+  try {
+    const { folderName, imagePaths } = await generateImages(prompts);
+    return NextResponse.json({ folderName, images: imagePaths }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}
+
+export async function GET(req) {
+  return NextResponse.json({ error: 'Method Not Allowed' }, { status: 405 });
 }
